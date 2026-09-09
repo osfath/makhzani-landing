@@ -3,58 +3,33 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>مخزني — علب وفوارغ التغليف الفاخرة</title>
+    <title>مخزني — علب وفوارغ التغليف</title>
     <meta
       name="description"
-      content="مخزني — مورّد علب وفوارغ التغليف: بخاخات، بطلات، كبّات، وزجاجيات بجودة تليق بعلامتك التجارية. تشكيلة واسعة وكميات جملة."
+      content="مخزني — مورّد علب وفوارغ التغليف: بخاخات، بطلات، كبّات، وزجاجيات بجودة تليق بعلامتك التجارية. اطلب مباشرةً عبر واتساب مع الكميات المتوفّرة لحظياً."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400;500;600;700&family=Tajawal:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@400;500;600;700&family=Tajawal:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="styles.css" />
-    <link
-      rel="icon"
-      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23A9744F'/%3E%3Cpath d='M9 22V10l7 5 7-5v12' stroke='%23F4EFE7' stroke-width='2.4' fill='none' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E"
-    />
+    <link rel="icon" href="assets/logo.svg" />
   </head>
   <body>
-    <div class="grain" aria-hidden="true"></div>
-
     <!-- ===== Header ===== -->
     <header class="site-head" id="top">
       <a class="brand" href="#top" aria-label="مخزني">
-        <span class="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 32 32">
-            <path
-              d="M9 22V10l7 5 7-5v12"
-              stroke="currentColor"
-              stroke-width="2.4"
-              fill="none"
-              stroke-linejoin="round"
-              stroke-linecap="round"
-            />
-          </svg>
-        </span>
-        <span class="brand-word">
-          <b>مخزني</b>
-          <i>MAKHZANI</i>
-        </span>
+        <img src="assets/logo.svg" alt="مخزني" />
       </a>
-
       <nav class="site-nav" aria-label="التنقّل الرئيسي">
         <a href="#catalog">المنتجات</a>
         <a href="#categories">الفئات</a>
         <a href="#why">لماذا مخزني</a>
         <a href="#contact">تواصل</a>
       </nav>
-
-      <a class="pill-cta" href="#contact">
-        اطلب الآن
-        <span aria-hidden="true">↖</span>
-      </a>
+      <a class="pill-cta" href="#catalog">اطلب الآن <span aria-hidden="true">↖</span></a>
     </header>
 
     <!-- ===== Hero ===== -->
@@ -62,20 +37,19 @@
       <div class="hero-copy">
         <p class="kicker reveal">تغليف · علب · فوارغ</p>
         <h1 class="reveal" style="--d: 0.05s">
-          العلبة الأولى
-          <span class="ital">انطباعٌ</span>
-          لا يُنسى.
+          علبةٌ <span class="accent">تليق</span> بعلامتك.
         </h1>
         <p class="lede reveal" style="--d: 0.12s">
           نوفّر لعلامتك التجارية علبَ وفوارغ التغليف — بخاخات، بطلات، كبّات
-          وزجاجيات — بخاماتٍ نظيفة وتشطيبٍ راقٍ، وبكمياتٍ تناسب الجملة.
+          وزجاجيات — بخاماتٍ نظيفة وتشطيبٍ راقٍ. اطلب مباشرةً عبر واتساب،
+          والكميات المتوفّرة تظهر لحظياً.
         </p>
         <div class="hero-actions reveal" style="--d: 0.2s">
           <a class="btn btn-solid" href="#catalog">تصفّح الكتالوج</a>
-          <a class="btn btn-ghost" href="#contact">اطلب عبر مركز التسويق</a>
+          <a class="btn btn-ghost" href="#contact">تواصل معنا</a>
         </div>
         <dl class="hero-stats reveal" style="--d: 0.28s">
-          <div><dt>+34</dt><dd>صنف جاهز</dd></div>
+          <div><dt><b>+34</b></dt><dd>صنف جاهز</dd></div>
           <div><dt>4</dt><dd>فئات رئيسية</dd></div>
           <div><dt>جملة</dt><dd>كميات مرنة</dd></div>
         </dl>
@@ -84,12 +58,7 @@
       <div class="hero-stage reveal" style="--d: 0.15s">
         <div class="stage-arch" aria-hidden="true"></div>
         <span class="stage-index" aria-hidden="true">٠١</span>
-        <img
-          class="stage-hero"
-          src="assets/products/image5.png"
-          alt="بطل عنبري بمضخة"
-          loading="eager"
-        />
+        <img class="stage-hero" src="assets/products/image5.png" alt="بطل عنبري بمضخة" />
         <img
           class="stage-mini"
           src="assets/products/image12.png"
@@ -143,25 +112,25 @@
         <h2>تفاصيلٌ تصنع الفرق</h2>
       </header>
       <div class="why-grid">
-        <article class="why-card">
+        <article class="why-card reveal">
           <span class="why-no">٠١</span>
           <h3>تشكيلة واسعة</h3>
           <p>أحجام وألوان وأغطية متعددة — تجد العلبة المناسبة لكل منتج.</p>
         </article>
-        <article class="why-card">
+        <article class="why-card reveal" style="--d: 0.08s">
           <span class="why-no">٠٢</span>
           <h3>كميات جملة</h3>
           <p>توريدٌ بكمياتٍ مرنة تناسب الإنتاج الصغير والطلبات الكبيرة.</p>
         </article>
-        <article class="why-card">
+        <article class="why-card reveal" style="--d: 0.16s">
           <span class="why-no">٠٣</span>
-          <h3>خاماتٌ نظيفة</h3>
-          <p>بلاستيك وزجاج بتشطيبٍ راقٍ يليق بعلامتك ويحمي محتواك.</p>
+          <h3>كميات لحظية</h3>
+          <p>المتوفّر من كل صنف يظهر على الموقع ويتحدّث تلقائياً أولاً بأول.</p>
         </article>
-        <article class="why-card">
+        <article class="why-card reveal" style="--d: 0.24s">
           <span class="why-no">٠٤</span>
-          <h3>طلبٌ سريع</h3>
-          <p>مندوبو التسويق يرسلون طلبياتك عبر التطبيق، فتصل مجهّزةً بسرعة.</p>
+          <h3>طلبٌ فوري</h3>
+          <p>اختر أصنافك وأرسل الطلب مباشرةً عبر واتساب بضغطة واحدة.</p>
         </article>
       </div>
     </section>
@@ -172,11 +141,11 @@
         <p class="eyebrow light">لنبدأ</p>
         <h2>جهّز طلبيتك القادمة مع مخزني</h2>
         <p class="cta-sub">
-          تواصل مع مركز التسويق لاختيار العلب المناسبة وترتيب التوريد.
+          اختر العلب المناسبة وأرسل طلبك عبر واتساب، ونتكفّل بالباقي.
         </p>
         <div class="cta-actions">
-          <a class="btn btn-cream" href="tel:+9640000000000">اتصل بنا</a>
-          <a class="btn btn-outline" href="#catalog">عاود تصفّح الكتالوج</a>
+          <a class="btn btn-wa" id="waContact" href="#">اطلب عبر واتساب</a>
+          <a class="btn btn-cream" href="#catalog">تصفّح الكتالوج</a>
         </div>
         <p class="cta-note">* بيانات التواصل والهيدر الرسمي تُحدَّث لاحقاً.</p>
       </div>
@@ -185,10 +154,7 @@
     <!-- ===== Footer ===== -->
     <footer class="site-foot">
       <div class="foot-brand">
-        <span class="brand-word">
-          <b>مخزني</b>
-          <i>MAKHZANI</i>
-        </span>
+        <img src="assets/logo-inverse.svg" alt="مخزني" />
         <p>علب وفوارغ التغليف — تشكيلةٌ تليق بكل علامة.</p>
       </div>
       <div class="foot-col">
@@ -199,12 +165,35 @@
       </div>
       <div class="foot-col">
         <h4>تواصل</h4>
-        <a href="tel:+9640000000000" dir="ltr">+964 000 000 0000</a>
+        <a id="waFoot" href="#" dir="ltr">واتساب</a>
         <span>العراق</span>
       </div>
       <p class="foot-copy">© <span id="year"></span> مخزني — جميع الحقوق محفوظة.</p>
     </footer>
 
+    <!-- ===== Cart ===== -->
+    <button class="cart-fab" id="cartFab" aria-label="عرض السلّة">
+      🛒 السلّة <span class="cart-count" id="cartCount">0</span>
+    </button>
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+    <aside class="drawer" id="drawer" aria-label="سلّة الطلب" aria-hidden="true">
+      <div class="drawer-head">
+        <h3>طلبك</h3>
+        <button class="drawer-close" id="drawerClose" aria-label="إغلاق">✕</button>
+      </div>
+      <div class="drawer-items" id="cartItems"></div>
+      <div class="drawer-foot">
+        <input id="custName" type="text" placeholder="الاسم (اختياري)" />
+        <input id="custPhone" type="tel" inputmode="tel" placeholder="رقم الهاتف (اختياري)" />
+        <div class="drawer-total">
+          <span>عدد القطع</span>
+          <span id="cartQty">0</span>
+        </div>
+        <button class="btn btn-wa" id="sendWa">إرسال الطلب عبر واتساب</button>
+      </div>
+    </aside>
+
+    <script src="config.js"></script>
     <script src="products.js"></script>
     <script src="app.js"></script>
   </body>

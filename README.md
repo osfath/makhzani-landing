@@ -1,59 +1,58 @@
 # مخزني — صفحة الهبوط (Landing)
 
-صفحة هبوط ثابتة (Static) تعرض كتالوج علب وفوارغ التغليف. لا تحتاج خادماً — HTML/CSS/JS
-خالص، جاهزة للنشر على **GitHub Pages**.
+صفحة هبوط ثابتة تعرض كتالوج علب وفوارغ التغليف، مع **طلب مباشر عبر واتساب** و**كميات
+متوفّرة لحظياً** تُقرأ من Google Sheet. منشورة على GitHub Pages بلا خادم.
 
 ## المحتوى
 
 ```
 landing/
-├── index.html          ← الصفحة
-├── styles.css          ← نظام التصميم (فخامة تحريرية دافئة، RTL)
-├── app.js              ← بناء الفئات/الكتالوج + التصفية + الكشف عند التمرير
-├── products.js         ← بيانات 34 صنفاً (مولّدة من الكودات المنهجية والصور)
-├── assets/products/    ← صور المنتجات (16 صورة)
-└── .nojekyll           ← يمنع Jekyll من تجاهل الملفات (مهم على Pages)
+├── index.html          ← الصفحة (هوية اللوجو الرسمية RTL)
+├── styles.css          ← نظام التصميم (أحمر #E20000 + فحمي + فاتح)
+├── config.js           ← الإعدادات: رقم واتساب + Google Sheet ← عدّلها هنا
+├── app.js              ← الكتالوج + السلّة + واتساب + جلب الكميات الحيّة
+├── products.js         ← بيانات 34 صنفاً (من الكودات المنهجية والصور)
+├── assets/logo.svg         ← اللوجو للخلفيات الفاتحة
+├── assets/logo-inverse.svg ← اللوجو للخلفيات الداكنة
+├── assets/products/    ← صور المنتجات
+├── stock-template.csv  ← قالب تستورده إلى Google Sheet (SKU/Name/Quantity)
+└── .nojekyll
 ```
+
+## 1) رقم واتساب
+في `config.js` اضبط `whatsapp` بالصيغة الدولية بلا `+` أو `00`.
+الرقم الحالي: `9647771418929` (من 009647771418929). زر «إرسال الطلب عبر واتساب»
+يفتح محادثة برسالة تحوي الأصناف والكميات واسم/هاتف العميل.
+
+## 2) الكميات المتوفّرة لحظياً (Google Sheet)
+1. أنشئ Google Sheet جديداً، واستورد `stock-template.csv` (File → Import) — يعطيك
+   الأعمدة `SKU | Name | Quantity` لكل الأصناف.
+2. حدّث عمود `Quantity` بالكميات الحقيقية (سيتحدّث الموقع تلقائياً بعد أي تعديل).
+3. Share → «أي شخص لديه الرابط: مُشاهِد».
+4. من رابط الجدول انسخ المعرّف: `https://docs.google.com/spreadsheets/d/<SHEET_ID>/edit`.
+5. في `config.js` ضع `sheetId` و`sheetName` (اسم التبويب، افتراضياً `Stock`).
+
+الموقع يقرأ الكميات عبر واجهة gviz (JSON) ويعيد الجلب كل 90 ثانية — أي تعديل في
+الجدول يظهر خلال دقيقة بلا إعادة نشر. قبل ضبط `sheetId` تُخفى شارات الكميات تلقائياً.
+
+## 3) النشر / التحديث
+المستودع منشور على GitHub Pages. أي تعديل:
+```bash
+git add . && git commit -m "update" && git push
+```
+يعيد النشر تلقائياً خلال دقيقة. (ملاحظة: تعديل الكميات في Google Sheet لا يحتاج push
+— يتحدّث حيّاً؛ الـ push فقط لتغييرات الكود/المنتجات.)
 
 ## معاينة محلية
-
-افتح `index.html` مباشرةً في المتصفّح (يعمل من `file://` لأن البيانات مضمّنة، بلا fetch).
-أو شغّل خادماً بسيطاً:
-
+افتح `index.html` مباشرةً، أو:
 ```bash
-cd landing
-python -m http.server 8000   # ثم افتح http://localhost:8000
+python -m http.server 8000
 ```
-
-## النشر على GitHub Pages
-
-### الخيار الموصى به — مستودع مستقل للتسويق
-يُبقي سورس التطبيق خاصاً وينشر التسويق وحده:
-
-```bash
-cd landing
-git init -b main
-git add .
-git commit -m "Makhzani landing page"
-gh repo create makhzani-landing --public --source=. --push
-# فعّل الصفحات:
-gh api -X POST repos/:owner/makhzani-landing/pages -f build_type=legacy \
-  -f 'source[branch]=main' -f 'source[path]=/'
-```
-أو يدوياً: على GitHub → Settings → Pages → Source: Deploy from a branch →
-Branch: `main` / `(root)` → Save. سيصبح الرابط `https://<user>.github.io/makhzani-landing/`.
-
-### خيار بديل — مجلد `/docs` في مستودع قائم
-انسخ محتوى `landing/` إلى `docs/` في المستودع، ثم Settings → Pages → Branch:
-`main` / `/docs`.
 
 ## تحديث الكتالوج
-
-بيانات المنتجات في `products.js` (`window.PRODUCTS`). لإضافة/تعديل صنف: عدّل المصفوفة
-مباشرةً (name, sku, cat, catName, type, size, color, cap, img)، وضع الصورة في
-`assets/products/`. الفئات المدعومة: `spray` (بخاخات) · `bottle` (بطلات) ·
-`cup` (كبّات) · `glass` (زجاجيات).
+عدّل `products.js` (`window.PRODUCTS`) وأضف الصور في `assets/products/`. الفئات:
+`spray` · `bottle` · `cup` · `glass`.
 
 ## ملاحظات
-- الخطوط من Google Fonts (Markazi Text · Tajawal · Cormorant Garamond · IBM Plex Mono).
-- الهيدر/بيانات التواصل placeholder — تُستبدل بترويسة الشركة الرسمية لاحقاً.
+- اللوجو والهوية من `VISIDAFAQ.svg` (أحمر #E20000، فحمي #171717/#404040، فاتح #F2F2F2).
+- الخطوط: Reem Kufi · Tajawal · IBM Plex Mono (Google Fonts).
