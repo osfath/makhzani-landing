@@ -18,17 +18,21 @@
     { key: "glass", label: "زجاجيات" },
   ];
 
-  /* ============ الكميات الحيّة من Google Sheet (CSV منشور) ============ */
-  let stock = null; // Map sku -> qty ، أو null إن لم تُضبط الورقة
+  /* ============ الكميات الحيّة (API البرنامج أو Google Sheet) ============ */
+  let stock = null; // Map sku -> qty ، أو null إن لم يُضبط مصدر
+  const API = String(CFG.apiBase || "").replace(/\/+$/, "");
 
   function stockUrl() {
-    if (!CFG.sheetPubId) return null;
-    let u =
-      "https://docs.google.com/spreadsheets/d/e/" +
-      CFG.sheetPubId +
-      "/pub?output=csv";
-    if (CFG.sheetGid) u += "&gid=" + enc(CFG.sheetGid) + "&single=true";
-    return u;
+    if (API) return API + "/api/public/stock"; // مصدر حيّ من برنامج مخزني
+    if (CFG.sheetPubId) {
+      let u =
+        "https://docs.google.com/spreadsheets/d/e/" +
+        CFG.sheetPubId +
+        "/pub?output=csv";
+      if (CFG.sheetGid) u += "&gid=" + enc(CFG.sheetGid) + "&single=true";
+      return u;
+    }
+    return null;
   }
 
   // محلّل CSV بسيط يدعم الحقول المقتبسة والفواصل داخلها والأسطر المتعددة.
@@ -68,6 +72,13 @@
     const url = stockUrl();
     if (!url) return null;
     const res = await fetch(url, { cache: "no-store" });
+    // مصدر البرنامج يعيد JSON {stock:[{sku,qty}]}
+    if (API) {
+      const data = await res.json();
+      const map = new Map();
+      for (const r of data.stock || []) map.set(String(r.sku).trim(), Number(r.qty) || 0);
+      return map;
+    }
     const text = await res.text();
     const rows = parseCSV(text).filter((r) => r.some((c) => c.trim() !== ""));
     if (rows.length === 0) return new Map();
@@ -291,7 +302,7 @@
     const base = WA ? "https://wa.me/" + WA : "https://wa.me/";
     return base + (text ? "?text=" + enc(text) : "");
   }
-  function orderMessage() {
+  function orderMessage(orderNo) {
     const lines = ["مخزني — طلب جديد", "————————————"];
     cart.forEach((q, sku) => {
       const p = bySku.get(sku);
@@ -299,6 +310,7 @@
     });
     const { pieces } = cartTotals();
     lines.push("————————————", `عدد القطع: ${pieces}`);
+    if (orderNo) lines.push(`رقم الطلب: ${orderNo}`);
     const name = $("#custName").value.trim();
     const phone = $("#custPhone").value.trim();
     if (name) lines.push(`الاسم: ${name}`);
@@ -390,13 +402,49 @@
   fab.addEventListener("click", () => openDrawer(true));
   $("#drawerClose").addEventListener("click", () => openDrawer(false));
   overlay.addEventListener("click", () => openDrawer(false));
-  $("#sendWa").addEventListener("click", () => {
+
+  // إرسال الطلب: إن كان apiBase مضبوطاً يدخل الطلب دورة الطلبيات في البرنامج،
+  // ثم يُفتح واتساب في الحالتين لإشعار فوري.
+  async function submitOrder() {
     if (cart.size === 0) {
       alert("سلّتك فارغة — أضِف أصنافاً أولاً.");
       return;
     }
-    window.open(waLink(orderMessage()), "_blank");
-  });
+    const btn = $("#sendWa");
+    const name = $("#custName").value.trim();
+    const phone = $("#custPhone").value.trim();
+    const items = [];
+    cart.forEach((qty, sku) => items.push({ sku, qty }));
+
+    if (API) {
+      btn.disabled = true;
+      const old = btn.textContent;
+      btn.textContent = "جارٍ الإرسال…";
+      try {
+        const res = await fetch(API + "/api/public/order", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ name, phone, note: "", items }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || "تعذّر إرسال الطلب");
+        window.open(waLink(orderMessage(data.orderNo)), "_blank");
+        alert("تم إرسال طلبك" + (data.orderNo ? " برقم " + data.orderNo : "") + " ✓");
+        cart.clear();
+        syncCartUi();
+        openDrawer(false);
+      } catch (e) {
+        alert("تعذّر إرسال الطلب للبرنامج: " + e.message + "\nسنفتح واتساب بدلاً من ذلك.");
+        window.open(waLink(orderMessage()), "_blank");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = old;
+      }
+    } else {
+      window.open(waLink(orderMessage()), "_blank");
+    }
+  }
+  $("#sendWa").addEventListener("click", submitOrder);
 
   // روابط واتساب العامة
   const greet = "مرحباً مخزني، أودّ الاستفسار عن علب التغليف.";
