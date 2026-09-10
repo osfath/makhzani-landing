@@ -18,17 +18,50 @@
     { key: "glass", label: "زجاجيات" },
   ];
 
-  /* ============ الكميات الحيّة من Google Sheet ============ */
+  /* ============ الكميات الحيّة من Google Sheet (CSV منشور) ============ */
   let stock = null; // Map sku -> qty ، أو null إن لم تُضبط الورقة
 
   function stockUrl() {
-    if (!CFG.sheetId) return null;
+    if (!CFG.sheetPubId) return null;
     let u =
-      "https://docs.google.com/spreadsheets/d/" +
-      CFG.sheetId +
-      "/gviz/tq?tqx=out:json";
-    if (CFG.sheetName) u += "&sheet=" + enc(CFG.sheetName);
+      "https://docs.google.com/spreadsheets/d/e/" +
+      CFG.sheetPubId +
+      "/pub?output=csv";
+    if (CFG.sheetGid) u += "&gid=" + enc(CFG.sheetGid) + "&single=true";
     return u;
+  }
+
+  // محلّل CSV بسيط يدعم الحقول المقتبسة والفواصل داخلها والأسطر المتعددة.
+  function parseCSV(text) {
+    const rows = [];
+    let row = [];
+    let field = "";
+    let q = false;
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      if (q) {
+        if (ch === '"') {
+          if (text[i + 1] === '"') {
+            field += '"';
+            i++;
+          } else q = false;
+        } else field += ch;
+      } else if (ch === '"') q = true;
+      else if (ch === ",") {
+        row.push(field);
+        field = "";
+      } else if (ch === "\n") {
+        row.push(field);
+        rows.push(row);
+        row = [];
+        field = "";
+      } else if (ch !== "\r") field += ch;
+    }
+    if (field.length || row.length) {
+      row.push(field);
+      rows.push(row);
+    }
+    return rows;
   }
 
   async function fetchStock() {
@@ -36,22 +69,19 @@
     if (!url) return null;
     const res = await fetch(url, { cache: "no-store" });
     const text = await res.text();
-    const start = text.indexOf("{");
-    const end = text.lastIndexOf("}");
-    const json = JSON.parse(text.slice(start, end + 1));
-    const cols = (json.table.cols || []).map((c) =>
-      (c.label || "").trim().toLowerCase(),
-    );
-    let si = cols.indexOf("sku");
-    let qi = cols.findIndex((l) => ["quantity", "qty", "الكمية"].includes(l));
+    const rows = parseCSV(text).filter((r) => r.some((c) => c.trim() !== ""));
+    if (rows.length === 0) return new Map();
+    const head = rows[0].map((h) => h.trim().toLowerCase());
+    let si = head.indexOf("sku");
+    let qi = head.findIndex((l) => ["quantity", "qty", "الكمية"].includes(l));
+    const hasHeader = si >= 0 || qi >= 0;
     if (si < 0) si = 0;
-    if (qi < 0) qi = 1;
+    if (qi < 0) qi = head.length > 1 ? head.length - 1 : 1;
     const map = new Map();
-    for (const r of json.table.rows || []) {
-      const c = r.c || [];
-      const sku = c[si] && c[si].v != null ? String(c[si].v).trim() : "";
+    for (const r of hasHeader ? rows.slice(1) : rows) {
+      const sku = (r[si] || "").trim();
       if (!sku || sku.toLowerCase() === "sku") continue;
-      const q = c[qi] && c[qi].v != null ? Number(c[qi].v) : NaN;
+      const q = Number((r[qi] || "").trim());
       map.set(sku, Number.isFinite(q) ? q : 0);
     }
     return map;
