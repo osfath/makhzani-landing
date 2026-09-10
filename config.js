@@ -7,7 +7,7 @@ window.MAKHZANI_CONFIG = {
   // العنوان العام لبرنامج مخزني (من النفق)، مثل: https://xxxx.trycloudflare.com
   // عند ضبطه: تُقرأ الكميات حيّاً من البرنامج، وطلبات الموقع تدخل دورة الطلبيات
   // (STAGING) للموافقة داخل البرنامج مباشرةً. اتركه فارغاً للاعتماد على واتساب فقط.
-  apiBase: "",
+  apiBase: "https://simulation-wto-powerful-altered.trycloudflare.com",
 
   // مصدر بديل للكميات إن لم يُستخدم apiBase — Google Sheet منشور (اختياري).
   sheetPubId: "",
