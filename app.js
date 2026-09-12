@@ -32,7 +32,7 @@
       if (CFG.sheetGid) u += "&gid=" + enc(CFG.sheetGid) + "&single=true";
       return u;
     }
-    return null;
+    return "stock.json"; // ملف ثابت في الموقع يدفعه الجهاز دورياً (بلا نفق)
   }
 
   // محلّل CSV بسيط يدعم الحقول المقتبسة والفواصل داخلها والأسطر المتعددة.
@@ -72,11 +72,12 @@
     const url = stockUrl();
     if (!url) return null;
     const res = await fetch(url, { cache: "no-store" });
-    // مصدر البرنامج يعيد JSON {stock:[{sku,qty}]}
-    if (API) {
+    // JSON {stock:[{sku,qty}]} — من API البرنامج أو من stock.json الثابت.
+    if (API || !CFG.sheetPubId) {
       const data = await res.json();
       const map = new Map();
-      for (const r of data.stock || []) map.set(String(r.sku).trim(), Number(r.qty) || 0);
+      for (const r of data.stock || [])
+        map.set(String(r.sku).trim(), Number(r.qty) || 0);
       return map;
     }
     const text = await res.text();
